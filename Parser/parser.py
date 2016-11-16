@@ -8,7 +8,6 @@ import re
 
 #This fuction is used to minimise the input and get rid of all the comments before hand, this may not be useful in the grand scheme of things, however it just gives some utility
 #and provides a proof of skill
-
 def minimise():
 	comment_flag = False
 	newline_flag = False
@@ -32,6 +31,7 @@ def minimise():
 		print(line.strip())		
 	return
 	
+	
 def parse_for_general(): #goal is to find functions and data types along with their constructors
 		#check for data types first
 		result = types.match(line)
@@ -46,11 +46,12 @@ def parse_for_general(): #goal is to find functions and data types along with th
 def parse_for_constructor():
 		print("looking for constructors")
 		result = construct.match(line)
+		print(result)
 		if result:
 			constructors.append(((result.string).strip()).split(" ")[1])
+			return True
 		elif(line in ["\r\n", "\n"]):
 			return False
-
 	
 	
 #Start of program
@@ -63,10 +64,11 @@ constructor_counter = 0
 functions = []
 function_counter = 0
 constructor_flag = False
-
+#Patterns for regular expressions
 types = re.compile("^data")
-construct = re.compile("=.* | \|")
+construct = re.compile("^\t[=|]")
 funct = re.compile("^.* ::")
+#start Parsing
 for line in f.readlines():
 	if(constructor_flag):
 		constructor_flag = parse_for_constructor()
