@@ -1,11 +1,14 @@
 from tkinter import *
 import sys
-
+sys.path.append(r"C:\Users\Thoma\Documents\GitHub\CS310")
+from Compiler import *
+from Parser import *
 class Application (Frame):
-    text_exists = False
     def __init__(self, master=None):
         Frame.__init__(self, master)
+
         self.master = master
+        self.text_exists = False
         self.init_window()
         
     def init_window(self):
@@ -41,4 +44,4 @@ class Application (Frame):
 root =  Tk()
 root.geometry("400x300")
 app = Application(root)
-app.mainloop()
+root.mainloop()
