@@ -5,10 +5,6 @@
 
 import re
 
-
-#This fuction is used to minimise the input and get rid of all the comments before hand, this may not be useful in the grand scheme of things, however it just gives some utility
-#and provides a proof of skill
-
 class Parser:
     """ Parser for Haskell Frontend Application
     
