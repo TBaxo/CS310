@@ -1,83 +1,66 @@
 #goals:
-#	- Identify Data Types and Constructors
-#	- Identify funtion names and possibly the line they are on
-#	-
+#    - Identify Data Types and Constructors
+#    - Identify funtion names and possibly the line they are on
+#    -
 
 import re
 
+class Parser:
+    """ Parser for Haskell Frontend Application
+    
+    Basic Parser constructed for sole purpose of running on the dataset given in the same dirctory
+    There is very little customisability which may change, however this should suffice for the time being
+    
+    """
 
-#This fuction is used to minimise the input and get rid of all the comments before hand, this may not be useful in the grand scheme of things, however it just gives some utility
-#and provides a proof of skill
+    def __init__(self, filepath):
+        self.file = open(filepath)
+        
+        
+    def start_parse(self):
+        self.data_types = []
+        self.data_type_counter = 0
+        self.constructors = []
+        self.constructor_counter = 0
+        self.functions = []
+        self.function_counter = 0
+        self.constructor_flag = False
+        #Patterns for regular expressions
+        self.types = re.compile("^data")
+        self.construct = re.compile("^\t[=|]")
+        self.funct = re.compile("^.* ::")
+        #start Parsing
+        for line in self.file.readlines():
+            if(self.constructor_flag):
+                self.constructor_flag = self.parse_for_constructor(line)
+            else:
+                self.constructor_flag = self.parse_for_general(line)
+    
+        
+    def parse_for_general(self, line): #goal is to find functions and data types along with their constructors
+            #check for data types first
+            result = self.types.match(line)
+            if result:
+                self.data_types.append(((result.string).strip()).split(" ")[1])
+                return True
+            result = self.funct.match(line)
+            if result:
+                self.functions.append(((result.string).strip()).split(" ")[0])
+                return 
 
-def minimise():
-	comment_flag = False
-	newline_flag = False
-	for line in f.readlines():
-		if(comment_flag):
-			if("--}" in line):
-				comment_flag = False
-				newline_flag = False
-			continue
-		else:
-			if("{--" in line):
-				comment_flag = True
-				continue
-			if(line in ["\n" , "\r\n"] and newline_flag == False):
-				print(line.strip())
-				newline_flag = True
-			elif(line not in ["\n" , "\r\n"] and newline_flag == True):
-				newline_flag = False
-			if(newline_flag == True):
-				continue
-		print(line.strip())		
-	return
-	
-def parse_for_general(): #goal is to find functions and data types along with their constructors
-		#check for data types first
-		result = types.match(line)
-		if result:
-			data_types.append(((result.string).strip()).split(" ")[1])
-			return True
-		result = funct.match(line)
-		if result:
-			functions.append(((result.string).strip()).split(" ")[0])
-			return 
-
-def parse_for_constructor():
-		print("looking for constructors")
-		result = construct.match(line)
-		if result:
-			constructors.append(((result.string).strip()).split(" ")[1])
-		elif(line in ["\r\n", "\n"]):
-			return False
-
-	
-	
+    def parse_for_constructor(self, line):
+            result = self.construct.match(line)
+            if result:
+                self.constructors.append(((result.string).strip()).split(" ")[1])
+                return True
+            elif(line in ["\r\n", "\n"]):
+                return False
+    
+if __name__ == "__main__":
+    p = Parser("data/ass15-2.hs")
+    p.start_parse()
+    print(str(p.data_types))
+    print(str(p.constructors))
+    print(str(p.functions))
 #Start of program
 #Important variables
-f = open("data/ass15-2.hs")
-data_types = []
-data_type_counter = 0
-constructors = []
-constructor_counter = 0
-functions = []
-function_counter = 0
-constructor_flag = False
-
-types = re.compile("^data")
-construct = re.compile("=.* | \|")
-funct = re.compile("^.* ::")
-for line in f.readlines():
-	if(constructor_flag):
-		constructor_flag = parse_for_constructor()
-	else:
-		constructor_flag = parse_for_general()
-	
-print("The data types found are: ") 
-print(data_types)
-print("The Constuctors found are: ")
-print(constructors)
-print("The functions found are: ")
-print(functions)
-
-#minimise()

@@ -17,21 +17,21 @@ add_flag = False
 previous_char = ""
 result = ""
 for chars in input_var.split(" "):
-	print(chars)
-	if(add_flag == True):
-		if(chars.isalpha()):
-			result += (" (Symbol \"" + chars + "\")")
-		else:
-			result += (" (Value " + chars + ")")
-		add_flag = False
-		continue
-	if(chars in operator_keywords.keys()):
-		result += (operator_keywords[chars] + previous_char)
-		add_flag = True
-		continue
-	if(chars.isalpha()):
-		previous_char = (" (Symbol \"" + chars + "\")")
-	else:
-		previous_char = (" (Value " + chars + ")")
+    print(chars)
+    if(add_flag == True):
+        if(chars.isalpha()):
+            result += (" (Symbol \"" + chars + "\")")
+        else:
+            result += (" (Value " + chars + ")")
+        add_flag = False
+        continue
+    if(chars in operator_keywords.keys()):
+        result += (operator_keywords[chars] + previous_char)
+        add_flag = True
+        continue
+    if(chars.isalpha()):
+        previous_char = (" (Symbol \"" + chars + "\")")
+    else:
+        previous_char = (" (Value " + chars + ")")
 print(result)
 #now parse front end with gve number of operators, assume infix, return in haskell format
