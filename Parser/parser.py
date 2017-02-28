@@ -19,42 +19,63 @@ class Parser:
         
     def start_parse(self):
         self.data_types = []
-        self.data_type_counter = 0
         self.constructors = []
-        self.constructor_counter = 0
-        self.functions = []
-        self.function_counter = 0
+        self.functions = {}
         self.constructor_flag = False
+        self.function_flag = False
         #Patterns for regular expressions
-        self.types = re.compile("^data")
-        self.construct = re.compile("^\t[=|]")
-        self.funct = re.compile("^.* ::")
+        """
+        remember to mention some explicit styling for backend to ensure correct parsing
+        """
+        self.types = re.compile(r"^data|^type")
+        self.construct = re.compile(r"^\t[=|]")
+        self.funct = re.compile(r"^.* ::")
+        self.function_pattern = re.compile(r"^[^=]*=")
+        self.empty = re.compile(r"^[\t\n\r\n]*")
         #start Parsing
         for line in self.file.readlines():
-            if(self.constructor_flag):
-                self.constructor_flag = self.parse_for_constructor(line)
+            if self.constructor_flag:
+                self.parse_for_constructor(line)
+            elif self.function_flag:
+                self.parse_for_function(line)
             else:
-                self.constructor_flag = self.parse_for_general(line)
+                self.parse_for_general(line)
     
         
     def parse_for_general(self, line): #goal is to find functions and data types along with their constructors
             #check for data types first
             result = self.types.match(line)
             if result:
-                self.data_types.append(((result.string).strip()).split(" ")[1])
-                return True
+                type_name = ((result.string).strip()).split(" ")[1]
+                self.data_types.append(type_name)
+                #print("now looking for constructors")
+                self.constructor_flag = True
             result = self.funct.match(line)
             if result:
-                self.functions.append(((result.string).strip()).split(" ")[0])
-                return 
+                func_name = ((result.string).strip()).split(" ")[0]
+                self.functions[func_name] = []
+                #print("now looking for pattern matches")
+                self.function_flag = True
+                
 
     def parse_for_constructor(self, line):
             result = self.construct.match(line)
             if result:
                 self.constructors.append(((result.string).strip()).split(" ")[1])
-                return True
-            elif(line in ["\r\n", "\n"]):
-                return False
+            elif self.empty.match(line):
+                #print("stopped looking for constructors")
+                self.constructor_flag = False
+    
+    def parse_for_function(self, line):
+        result = self.function_pattern.match(line)
+        if result:
+            pass
+            pattern = result.group().split("=")[0]
+            function_name = pattern.split(" ")[0]
+            parameters = pattern[len(function_name):].strip()
+            self.functions[function_name].append(parameters)
+        elif self.empty.match(line):
+            self.function_flag = False
     
 if __name__ == "__main__":
     p = Parser("data/ass15-2.hs")
