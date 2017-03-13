@@ -1,3 +1,15 @@
+
+class Compiler:
+
+    def __init__(self, lines, bindings, start_param):
+        print("--Compiler V0.1 Initialised")
+        print("-------All Lines-------\n{}\n-------All Parameters-------\n{}\n-------Start Parameter-------\n{}\n-----------------------".format(lines, bindings, start_param))
+
+        
+        
+     
+"""
+
 #Compiler code, should compile standard frontend syntax using the haskell backend into a valid haskell String
 #simplfy things,only make the fuctions that are available
 #consider things like x + 3 + 2 + 4 --potential solutions include counting operators, foldL
@@ -6,9 +18,7 @@ format2 = "Declare (x, y)"
 result = "start ["
 operator_keywords = {"+": "Operation Add", "-": "Operation Minus", "*": "Operation Multiply", "/": "Operation Divide"}
 variables = ("String", "Integer", "Variable") #If these are found that means that this is something the user must input 
-
-
-
+     
 input_var = input("enter a front end syntax: \n")
 #number of operators need to be counted 
 num_operators = input_var.count("+") + input_var.count("-") + input_var.count("*") + input_var.count("/")
@@ -35,3 +45,12 @@ for chars in input_var.split(" "):
         previous_char = (" (Value " + chars + ")")
 print(result)
 #now parse front end with gve number of operators, assume infix, return in haskell format
+
+"""
+
+
+if __name__ == "__main__":
+    lines = ["x + 3"]
+    bindings = {'+': 'Operation Add ({}) ({})'}
+    start_param = {'start': 'start [{}] []'}
+    compiler = Compiler()

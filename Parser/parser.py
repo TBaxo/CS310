@@ -31,7 +31,7 @@ class Parser:
         self.construct = re.compile(r"^\t[=|]")
         self.funct = re.compile(r"^.* ::")
         self.function_pattern = re.compile(r"^[^=]*=")
-        self.empty = re.compile(r"^[\t\n\r\n]*")
+        self.empty = re.compile(r"^[\t\n\r\n]*$")
         #start Parsing
         for line in self.file.readlines():
             if self.constructor_flag:
@@ -69,7 +69,6 @@ class Parser:
     def parse_for_function(self, line):
         result = self.function_pattern.match(line)
         if result:
-            pass
             pattern = result.group().split("=")[0]
             function_name = pattern.split(" ")[0]
             parameters = pattern[len(function_name):].strip()
@@ -80,8 +79,12 @@ class Parser:
 if __name__ == "__main__":
     p = Parser("data/ass15-2.hs")
     p.start_parse()
+    """
     print(str(p.data_types))
+    print("\n")
     print(str(p.constructors))
+    print("\n")
     print(str(p.functions))
+    """
 #Start of program
 #Important variables

@@ -42,49 +42,63 @@ class Interface(ttk.Frame):
         self.textarea = ScrolledText(self.textframe)
         
         self.textarea.focus()
-        
+        """
         ttk.Style().configure("B.TFrame", bg="red")
+        
         self.bottomframe = ttk.Frame(self, relief="sunken", style="B.TFrame")
         self.bottomframe.grid(column=0, row=1, sticky=(E, S, W))
         self.bottomframe.columnconfigure(0, weight=2)
         self.bottomframe.rowconfigure(0, weight=2)
-        
+        """
         #self.StringVars()
         #self.linenumbers = Label()
         
     def compile(self):
-        print(self.textarea.get("1.0"))
-    
+        lines = [x for x in self.textarea.get("1.0", "end").strip().split("\n") if x not in [" ", "", "\r\n", "\n", "\t"]]
+        self.request_queue.put(("COMPILE", lines, self.bindings, self.start_param))
+        
     def get_filepath(self):
         filename = filedialog.askopenfilename()
         return filename
     
     def parse_result(self):
-        for var in self.bottomframe.winfo_children():
-            var.destroy()
+        #for var in self.bottomframe.winfo_children():
+        #    var.destroy()
         self.request_queue.put(("PARSE", self.get_filepath()))
         print("bighere")
         response = self.response_queue.get(True)
+        self.parse_data = response
         if response != None:
-            self.text = ttk.Label(self.bottomframe, text="Data Types: {s[0]}\nConstuctors: {s[1]}\nFunctions: {s[2]}".format(s=response), relief="sunken")
+            """
+            removed the bottom frame due to scaling issues, replace with pop-up dialog
+            """
+            
+            #self.text = ttk.Label(self.bottomframe, text="Data Types: {s[0]}\nConstuctors: {s[1]}\nFunctions: {s[2]}".format(s=response), relief="sunken")
             #self.bottomframe.constructors = ttk.Label(self.bottomframe, text= + str(p.constructors))
             #self.bottomframe.functions = ttk.Label(self.bottomframe, text= + str(p.functions))
             #self.bottomframe.data_types.grid()
             #self.bottomframe.constructors.grid()
             #self.bottomframe.functions.grid()
             #self.bottomframe.text["padding"] = (0, 0)
-            self.text.grid(column=0, row=0, sticky=(E, S, W))
-            self.text.columnconfigure(0, weight=1)
-            self.text.rowconfigure(0, weight=1)
+            #self.text.grid(column=0, row=0, sticky=(E, S, W))
+            #self.text.columnconfigure(0, weight=1)
+            #self.text.rowconfigure(0, weight=1)
         else:
-            self.error = ttk.Label(self.bottomframe, text="Invalid File Type", relief="sunken")
-            self.error.grid(column=0, row=0, sticky=(E, S, W))
-            self.error.columnconfigure(0, weight=1)
-            self.error.rowconfigure(0, weight=1)
+            #self.error = ttk.Label(self.bottomframe, text="Invalid File Type", relief="sunken")
+            #self.error.grid(column=0, row=0, sticky=(E, S, W))
+            #self.error.columnconfigure(0, weight=1)
+            #self.error.rowconfigure(0, weight=1)
             print("Invalid File Type")
             
     def config(self):
-        dialog = ConfigDialog()
+        dialog = ConfigDialog(parse_data=self.parse_data)
+        dialog.geometry('960x480')
+        dialog.resizable(width=False, height=False)
+        dialog.focus()
+        self.wait_window(dialog)
+        self.bindings = dialog.bindings
+        self.start_param = dialog.start_param
+        print("{}\n{}".format(start_param, bindings))
             
     def exit_call(self):
         self.isClosed.set()

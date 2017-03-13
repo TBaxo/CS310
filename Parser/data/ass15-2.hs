@@ -183,6 +183,7 @@ evaluateBool (Operation And (x) (y)) ((c,n):l) = if (evaluateBool (x) ((c,n):l) 
 																												else False
 evaluateBool (Operation Or (x) (y)) ((c,n):l) = if (evaluateBool (x) ((c,n):l) == False) && (evaluateBool (y) ((c,n):l) == False) then False
 																												else True
+																												
 conditional :: Expression -> [Statement] -> [Variable] -> [Variable]
 conditional (x) (s:s':[]) ((c,n):l)	= if (evaluateBool (x) ((c,n):l) == True) then execute (s) ((c,n):l)
 																			else execute (s') ((c,n):l)																			
